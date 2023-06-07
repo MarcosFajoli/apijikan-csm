@@ -1,4 +1,4 @@
-﻿using Refit;
+using Refit;
 using System.Text.RegularExpressions;
 
 namespace apijikan_csm
@@ -63,7 +63,7 @@ namespace apijikan_csm
 
             try
             {
-                ShowAnimes(response.Data, animesReturn, "top10", null);
+                ShowAnimes(response.Data, animesReturn, "top25", null);
             } catch (Exception ex) 
             {
                 Console.WriteLine($"Erro ao consultar a API Jikan: {ex.Message}");
@@ -78,9 +78,9 @@ namespace apijikan_csm
 
             if (function == "search"){
                 Console.WriteLine($"BUSCA POR: {busca}\n");
-            } else if (function == "top10"){
+            } else if (function == "top25"){
                 Console.Clear();
-                Console.WriteLine("TOP 10 ANIMES MYANIMELIST\n");
+                Console.WriteLine("TOP 25 ANIMES MYANIMELIST\n");
             }
 
             foreach (Anime anime in data)
@@ -103,7 +103,7 @@ namespace apijikan_csm
                 int.TryParse(option, out int number);
                 Console.Clear();
                 Console.Write(ShowAnimeInformation(animesReturn[(int)number - 1]));
-                Console.WriteLine("\n\nPresione qualquer tecla para continuar...");
+                Console.WriteLine("\n\nPressione qualquer tecla para continuar...");
                 Console.ReadLine();
             }
         }
