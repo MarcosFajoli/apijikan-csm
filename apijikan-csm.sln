@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apijikan-csm", "apijikan-csm\apijikan-csm.csproj", "{75F92BF8-73B9-44A6-B3AA-1A71638F43B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75F92BF8-73B9-44A6-B3AA-1A71638F43B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F92BF8-73B9-44A6-B3AA-1A71638F43B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F92BF8-73B9-44A6-B3AA-1A71638F43B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F92BF8-73B9-44A6-B3AA-1A71638F43B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CF1B17E-B8FD-4085-B853-4AFFB08355BF}
+	EndGlobalSection
+EndGlobal
