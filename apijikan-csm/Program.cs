@@ -1,22 +1,22 @@
-﻿using apijikan_csm;
-using Refit;
-using System.Runtime.InteropServices;
+﻿using Refit;
+using System.Text.RegularExpressions;
 
 namespace apijikan_csm
 {
     class Program
     {
         private static IJikanApiService jikanApiService = RestService.For<IJikanApiService>("https://api.jikan.moe/v4");
-        private static List<Anime> resultPesquisa = new List<Anime>(25);
+        private static List<Anime> resultPesquisa;
 
         static async Task Main(string[] args)
         {
             bool active = true;
 
             while (active) {
+                resultPesquisa = new List<Anime>(25);
                 Console.Clear();
                 Console.WriteLine("Bem vindo à APIJikan Interface. \nEscolha sua opção, com base nas funcionalidades abaixo:");
-                Console.WriteLine("\n1 - Procurar Animes\n2 - Melhores Animes\n");
+                Console.WriteLine("\n1 - Procurar Animes\n2 - Melhores Animes\n0 - Encerrar aplicação\n");
 
                 string option = Console.ReadLine();
 
@@ -26,7 +26,7 @@ namespace apijikan_csm
                         break;
 
                     case "2":
-                        await GetTopAnime();
+                        await GetTopAnime(resultPesquisa);
                         break;
 
                     default:
@@ -37,64 +37,97 @@ namespace apijikan_csm
             }
         }
 
-        static async Task Search(List<Anime> animes)
+        static async Task Search(List<Anime> animesReturn)
         {
 
             Console.Clear();
-            Console.WriteLine("==== PROCURAR ANIMES ====\nInforme a palavra-chave a ser pesquisada: ");
+            Console.WriteLine("==== PROCURAR ANIMES ====\nInforme a palavra-chave a ser pesquisada:\n");
             string busca = Console.ReadLine();
+
+            ApiResponse response = await jikanApiService.SearchAnime(busca);
 
             try
             {
-                // Faça a chamada para a API Jikan
-                ApiResponse response = await jikanApiService.SearchAnime(busca);
-                int count = 0, countMax = 10, pag = 1;
-                string proximaPag;
-                string text = $"BUSCA POR: {busca}\n\n";
-
-                Console.WriteLine("\n");
-
-                // Processar a resposta
-                foreach (Anime anime in response.Data)
-                {
-                    animes.Add(anime);
-
-                    count++;
-                    Console.WriteLine($"{count} - {anime.Title}");
-                    text += $"{count} - {anime.Title}\n";
-
-                    if (count == countMax)
-                    {
-                        Console.WriteLine($"\nExibindo {count} resultados.\n\n");
-                        proximaPag = Console.ReadLine();
-                        Console.WriteLine("\n");
-
-                        if (proximaPag == "1")
-                        {
-                            countMax += 10;
-                            Console.Clear();
-                            Console.Write(text);
-                            continue;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                Console.WriteLine($"\nExibindo {count} resultados.\nBusca finalizada.\n\nPressione enter para continuar...");
-                Console.ReadLine();
-
+                ShowAnimes(response.Data, animesReturn, "search", busca);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao consultar a API Jikan: {ex}");
+                Console.WriteLine($"Erro ao consultar a API Jikan: {ex.Message}");
+                Console.ReadLine();
             }
         }
 
-        static async Task GetTopAnime()
+        static async Task GetTopAnime(List<Anime> animesReturn)
         {
+            ApiResponse response = await jikanApiService.GetTopAnime();
+
+            try
+            {
+                ShowAnimes(response.Data, animesReturn, "top10", null);
+            } catch (Exception ex) 
+            {
+                Console.WriteLine($"Erro ao consultar a API Jikan: {ex.Message}");
+                Console.ReadLine();
+            }
+        }
+
+        static void ShowAnimes(List<Anime> data, List<Anime> animesReturn, string function, string? busca)
+        {
+            int count = 0;
+            string option;
+
+            if (function == "search"){
+                Console.WriteLine($"BUSCA POR: {busca}\n\n");
+            } else if (function == "top10"){
+                Console.Clear();
+                Console.WriteLine("TOP 10 ANIMES MYANIMELIST\n\n");
+            }
+
+            foreach (Anime anime in data)
+            {
+                count++;
+                animesReturn.Add(anime);
+                Console.WriteLine($"{count} - {anime.Title}");
+
+            }
+
+            Console.WriteLine($"\nExibindo {count} resultados.\n\nEscolha a opção desejada:");
+            Console.WriteLine("\n(1o) Digite o número do anime para verificar suas informações.\n(2o) Digite qualquer outra coisa para sair da busca. \n\n");
+            option = Console.ReadLine();
+            Console.WriteLine("\n");
+
+            bool containsStr = Regex.IsMatch(option, "[a-zA-Z]");
+
+            if (!containsStr)
+            {
+                int.TryParse(option, out int number);
+                Console.Clear();
+                Console.Write(ShowAnimeInformation(animesReturn[(int)number - 1]));
+                Console.WriteLine("\n\nPresione qualquer tecla para continuar...");
+                Console.ReadLine();
+            }
+        }
+
+        static string ShowAnimeInformation(Anime anime)
+        {
+            string titulo = anime.Title, classificacao = anime.Rating, link = anime.Url, sinopse = anime.Synopsis;
+            int? episodios = anime.Episodes, ranking = anime.Rank;
+            double? score = anime.Score;
+
+            return $@"Exibindo informações de {titulo}
+                    
+Nome - {titulo}
+Episódios - {episodios}
+Score - {score}
+Ranking Geral - {ranking}
+Classificação - {classificacao}
+
+Sinopse
+=====================================================================================+
+{sinopse}
+=====================================================================================+
+
+Link MyAnimeList - {link}";
 
         }
     }
