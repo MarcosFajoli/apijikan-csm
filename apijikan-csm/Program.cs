@@ -77,10 +77,10 @@ namespace apijikan_csm
             string option;
 
             if (function == "search"){
-                Console.WriteLine($"BUSCA POR: {busca}\n\n");
+                Console.WriteLine($"BUSCA POR: {busca}\n");
             } else if (function == "top10"){
                 Console.Clear();
-                Console.WriteLine("TOP 10 ANIMES MYANIMELIST\n\n");
+                Console.WriteLine("TOP 10 ANIMES MYANIMELIST\n");
             }
 
             foreach (Anime anime in data)
@@ -92,7 +92,7 @@ namespace apijikan_csm
             }
 
             Console.WriteLine($"\nExibindo {count} resultados.\n\nEscolha a opção desejada:");
-            Console.WriteLine("\n(1o) Digite o número do anime para verificar suas informações.\n(2o) Digite qualquer outra coisa para sair da busca. \n\n");
+            Console.WriteLine("\n(1o) Digite o número do anime para verificar suas informações.\n(2o) Digite qualquer outra coisa para sair da busca. \n");
             option = Console.ReadLine();
             Console.WriteLine("\n");
 
